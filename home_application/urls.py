@@ -20,4 +20,5 @@ urlpatterns = patterns(
     (r'^job_detail/$', 'job_detail'),
     (r'^get_log_content/$', 'get_log_content'),
     (r'^fast_push_file/$', 'fast_push_file'),
+    (r'^helloworld/$', 'helloworld'),
 )

@@ -27,8 +27,8 @@ from django.conf.global_settings import *  # noqa
 # # 蓝鲸智云开发者中心的域名，形如：http://paas.bking.com
 # BK_PAAS_HOST = 'https://ios.corp.hq.csg'
 
-APP_ID = 'helloworld'
-APP_TOKEN = 'f1de0d71-2b3a-428f-9bd9-53b6e5eda5e5'
+APP_ID = 'lanjing-practice'
+APP_TOKEN = 'fee153f6-3a99-460b-af42-fdb5a409908f'
 # 蓝鲸智云开发者中心的域名，形如：http://paas.bking.com
 BK_PAAS_HOST = 'https://ios.corp.hq.csg'
 

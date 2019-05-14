@@ -230,3 +230,8 @@ def fast_push_file(request):
     data = cc_fast_push_file(biz_id, file_target_path, file_source, target_ip_list, file_source_ip_list,request.user.username)
     return JsonResponse(data)
 
+def helloworld(request):
+    """
+    helloworld
+    """
+    return render_mako_context(request,'/helloworld.html')
