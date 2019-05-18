@@ -21,4 +21,11 @@ urlpatterns = patterns(
     (r'^get_log_content/$', 'get_log_content'),
     (r'^fast_push_file/$', 'fast_push_file'),
     (r'^helloworld/$', 'helloworld'),
+
+    (r'^script/$', 'script'),
+    (r'^script/list/$', 'script_list'),
+    (r'^script/(\d+)$', 'script_get'),
+    (r'^script/add/$', 'script_add'),
+    (r'^script/delete/(\d+)$', 'script_delete'),
+    (r'^script/update/(\d+)$', 'script_update'),
 )

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import time
 
 import requests
 from django.http import JsonResponse
@@ -9,7 +10,9 @@ from common.mymako import render_mako_context
 from  common.mymako import render_json
 from conf.default import APP_ID, APP_TOKEN, BK_PAAS_HOST
 from home_application.esb_helper import cc_search_biz, cc_search_set, run_fast_execute_script, cc_search_host, \
-    get_job_instance_log, get_host_ip_list, cc_get_job_detail, run_execute_job, cc_fast_push_file
+    get_job_instance_log, get_host_ip_list, cc_get_job_detail, run_execute_job, cc_fast_push_file, \
+    script_list_data,script_list_add,script_list_delete,script_list_update,script_list_get
+
 
 
 def home(request):
@@ -46,6 +49,12 @@ def modal(request):
     """
     return render_mako_context(request, '/home_application/modal.html')
 
+def script(request):
+    """
+     脚本
+    """
+    return render_mako_context(request, '/home_application/script.html')
+
 def getJson(request):
     data = [
         {'time': '1月1日',  'cpu': 89.3, 'men': 96.4, 'disk':88},
@@ -81,6 +90,7 @@ def getEchartsJson(request):
         ]
     }
     return render_json({"result": True,"data": data})
+
 # 该方法一般不作修改
 def search_biz(request):
     data = cc_search_biz(request.user.username)
@@ -235,3 +245,26 @@ def helloworld(request):
     helloworld
     """
     return render_mako_context(request,'/helloworld.html')
+
+def helloworld(request):
+    """
+    script
+    """
+    return render_mako_context(request,'/script.html')
+
+def script_list(request):
+    """获取脚本列表"""
+
+    return JsonResponse(script_list_data(request),safe=False)
+
+def script_add(request):
+    return JsonResponse(script_list_add(request))
+
+def script_delete(request,id):
+    return JsonResponse(script_list_delete(id))
+
+def script_update(request,id):
+    return JsonResponse(script_list_update(request,id))
+
+def script_get(request,id):
+    return JsonResponse(script_list_get(id))

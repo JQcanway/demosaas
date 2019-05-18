@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import base64
-import time
-import requests
 import json
 import sys
+import time
 
-from conf.default import APP_ID, APP_TOKEN, BK_PAAS_HOST
+import requests
+
 from common.log import logger
+from conf.default import APP_ID, APP_TOKEN, BK_PAAS_HOST
+from home_application.admin import Script
 
 reload(sys)
 sys.setdefaultencoding("utf8")
@@ -322,3 +324,69 @@ def get_host_ip_list(ip):
     ip_list = []
     ip_list = ip.split(',')
     return ip_list
+
+def script_list_data(request):
+    name = request.GET.get('name')
+    if name:
+        data = Script.objects.filter(name__contains=name)
+    else:
+        data = Script.objects.filter(name__contains='')
+    creator = request.GET.get('creator')
+    if creator:
+        data = Script.objects.filter(creator=creator)
+    start_time = request.GET.get('start_time')
+    if start_time:
+        data = Script.objects.filter(create_time__gte=start_time)
+
+    end_time = request.GET.get('end_time')
+    if end_time:
+        data = Script.objects.filter(create_time__lte=end_time)
+
+    source = request.GET.get('source')
+    if source:
+        data = Script.objects.filter(source=source)
+
+    type = request.GET.get('type')
+    if type:
+        data = Script.objects.filter(type=type)
+    list_data = []
+    for obj in data:
+        list_data.append(obj.toJson())
+    print list_data
+    return {'data':list_data}
+
+def script_list_add(request):
+
+    data = json.loads(request.body)
+    print data
+    Script(name=data['name'],
+           version = (Script.objects.count()+1),
+           desc=data['desc'],
+           source=data['source'],
+           type=data['type'],
+           content=data['content'],
+           creator=data['creator'],
+           create_time=time.time()).save()
+
+    return {'result':True}
+
+
+def script_list_delete(id):
+    Script.objects.filter(id=id).delete()
+    return {'result': True}
+
+def script_list_update(request,id):
+    params = json.loads(request.body)
+    print type(params)
+    script = Script.objects.get(id=params['id'])
+    script.name = params['name']
+    script.desc = params['desc']
+    script.source = params['source']
+    script.type = params['type']
+    script.content = params['content']
+    script.save()
+    return {'result': True}
+
+def script_list_get(id):
+    data = Script.objects.get(id=id)
+    return {'data':data.toJson()}

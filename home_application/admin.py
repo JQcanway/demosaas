@@ -10,3 +10,9 @@
 #
 # admin.site.register(aaaa)
 # ===============================================================================
+from django.contrib import admin
+
+from home_application.models import Script
+
+admin.site.register(Script)
+
