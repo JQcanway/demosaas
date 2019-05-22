@@ -390,3 +390,40 @@ def script_list_update(request,id):
 def script_list_get(id):
     data = Script.objects.get(id=id)
     return {'data':data.toJson()}
+
+
+def cc_search_host_ByBizId(biz_id, username="admin"):
+    '''
+    根据业务id查询主机
+    :param biz_id: 业务ID，int
+    :return: 查询主机结果
+    '''
+    url = BK_PAAS_HOST + "/api/c/compapi/v2/cc/search_host/"
+
+    # region  请求json数据
+    print biz_id
+    content = {
+        "bk_app_code": APP_ID,
+        "bk_app_secret": APP_TOKEN,
+        "bk_username": username,
+        "condition": [
+            {
+                "bk_obj_id": "biz",
+                "fields": ["bk_biz_id", "bk_biz_name"],
+                "condition": [
+                    {
+                        "field": "bk_biz_id",
+                        "operator": "$eq",
+                        "value": int(biz_id)
+                    }
+                ]
+
+            }
+        ]
+    }
+    # endregion
+
+    response = requests.post(url, json.dumps(content), verify=False)
+    result = json.loads(response.content)
+
+    return result

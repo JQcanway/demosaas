@@ -16,8 +16,11 @@ urlpatterns = patterns(
     url(r'^account/', include('account.urls')),
     # 应用功能开关控制--请勿修改
     url(r'^app_control/', include('app_control.urls')),
+    # task_two(里开始开发第二次作业主要功能
+    url(r'^configuration/', include('task_two.urls')),
     # 在home_application(根应用)里开始开发你的应用的主要功能
     url(r'^', include('home_application.urls')),
+
 )
 
 
