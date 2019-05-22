@@ -48,6 +48,9 @@ def get_host(request,id):
         for c in cloud:
             cloud_area += (c['bk_inst_name']+',')
         hostData['cloud_name'] = cloud_area[0:cloud_area.__len__()-1]
+
+
+        hostData['bk_cloud_id'] = cloud[0]['id']
         hostList.append(hostData)
     return JsonResponse({'data':hostList})
 
@@ -68,8 +71,9 @@ def exec_script(request):
     script = script['data']
     ipList = data['ip']
     ipMap = []
+    print ipList
     for ip in ipList:
-        ipData = {"ip":ip,"bk_cloud_id":0}
+        ipData = {"ip":ip['ip'],"bk_cloud_id":ip['bk_cloud_id']}
         ipMap.append(ipData)
     execData = run_fast_execute_script(data['business'],script['content'],ipMap)
 

@@ -363,7 +363,7 @@
             },
             // 更新脚本
             update() {
-                axios.put(site_url + "script/update/", this.script).then(res => {
+                axios.put(site_url + "script/update/"+this.script.id, this.script).then(res => {
                     this.cancel()
                     if (res.data.result) {
                         this.$Message.success('更新脚本成功');

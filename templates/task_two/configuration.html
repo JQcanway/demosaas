@@ -141,7 +141,7 @@
             selectChange(selection){
                var idData = []
                 for ( var i = 0; i< selection.length ; i++) {
-                    idData.push(selection[0].innerip)
+                    idData.push({'ip':selection[i].innerip,'bk_cloud_id':selection[i].bk_cloud_id})
                 }
                this.searchInfo.ip = idData
             },
