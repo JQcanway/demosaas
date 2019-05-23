@@ -38,7 +38,11 @@
                 <i-col span="11">
                     <Card :bordered="false">
                         <p slot="title">执行结果</p>
-                            <i-input disabled type="textarea" v-model="logContent" clearable></i-input>
+                        <div v-for="item in logContent">
+                            {{item.ip}}的结果如下：
+                            <i-input disabled type="textarea" v-model="item.log_content" clearable>
+                            </i-input>
+                        </div>
                     </Card>
                 </i-col>
             </Row>
@@ -83,7 +87,7 @@
                     },
                ],
                data: [],
-               logContent:'',
+               logContent:[],
                searchInfo: {
                    'business':'',
                    'script':'',

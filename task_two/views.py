@@ -24,17 +24,13 @@ def home(request):
 def get_business(request):
     data = cc_search_biz()
     data = data['data']
-    print data
     selectData = []
     for obj in data['info']:
         selectData.append({'label':obj['bk_biz_name'],'value':obj['bk_biz_id']})
-    print selectData
     return JsonResponse({'data': selectData})
 
 def get_host(request,id):
-    print "biz_id:"+id
     data = cc_search_host_ByBizId(id)
-    print data
     data = data['data']
     hostList = []
     for obj in data['info']:
@@ -59,19 +55,15 @@ def get_script(request):
     selectData = []
     for obj in data['data']:
         selectData.append({'label': obj['name'], 'value': obj['id']})
-    print selectData
     return JsonResponse({'data': selectData})
 
 def exec_script(request):
     data = json.loads(request.body)
-    print data
     scriptId = data['script']
-    print scriptId
     script = script_list_get(int(scriptId))
     script = script['data']
     ipList = data['ip']
     ipMap = []
-    print ipList
     for ip in ipList:
         ipData = {"ip":ip['ip'],"bk_cloud_id":ip['bk_cloud_id']}
         ipMap.append(ipData)
@@ -79,9 +71,9 @@ def exec_script(request):
 
     logData = get_job_instance_log(data['business'],execData['data'])
     result = False
-    logContent = ''
+    logContent = []
     for log in logData:
         result = log['is_success']
-        logContent += log['log_content']
+        logContent.append({'ip':log['ip'],'log_content':log['log_content']})
 
     return JsonResponse({'result':result.__str__().lower(),'logContent':logContent})
