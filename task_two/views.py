@@ -13,6 +13,8 @@ from home_application.esb_helper import cc_search_biz, cc_search_set, run_fast_e
     get_job_instance_log, get_host_ip_list, cc_get_job_detail, run_execute_job, cc_fast_push_file, \
     script_list_data,script_list_add,script_list_delete,script_list_update,script_list_get,cc_search_host_ByBizId
 
+from task_three.views import  add_monitor
+
 
 def home(request):
     """
@@ -77,3 +79,6 @@ def exec_script(request):
         logContent.append({'ip':log['ip'],'log_content':log['log_content']})
 
     return JsonResponse({'result':result.__str__().lower(),'logContent':logContent})
+
+def monitor(request):
+    return JsonResponse(add_monitor(request))

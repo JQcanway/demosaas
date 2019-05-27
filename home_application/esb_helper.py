@@ -53,7 +53,7 @@ def run_fast_execute_script(biz_id, script_content, ip_list, username = "admin")
 def run_execute_job(biz_id, job_id, ip_list, username="admin"):
     """
     快速执行脚本
-    :param job_id: 作业模板id
+    :param job_id: 模板id
     :param biz_id: 业务id
     :param ip_list: [{"ip":"10.0.0.10","bk_cloud_id":0}]
     :return: {"result": True, "data": "job_instance_id"}
@@ -349,9 +349,11 @@ def script_list_data(request):
     type = request.GET.get('type')
     if type:
         data = Script.objects.filter(type=type)
+
     list_data = []
     for obj in data:
-        list_data.append(obj.toJson())
+        if(obj.name != '监控指标采集'):
+            list_data.append(obj.toJson())
     print list_data
     return {'data':list_data}
 

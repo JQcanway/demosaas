@@ -10,4 +10,6 @@ urlpatterns = patterns(
     (r'^host/(\d+)$', 'get_host'),
     (r'^script/$', 'get_script'),
     (r'^exec_script/$', 'exec_script'),
+    (r'^monitor/$', 'monitor'),
+
 )

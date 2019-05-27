@@ -1,0 +1,121 @@
+<%inherit file="/base.html"/>
+<%block name="content">
+     <div class="home-page" id="app">
+        <div class="cw-search-box">
+            <P style="font-size:30px;">性能监控</P>
+             <i-table  :columns="columns" :data="data"></i-table>
+
+            <Drawer title="监控详情"
+            v-model="monitorDrawer"
+            :closable="false"
+            :mask-closable="false"
+            width="800">
+                <div style="padding: 0 15px">
+                    <div class="charts-wrapper">
+                        <ve-line :data="lineData" width="800px"></ve-line>
+                    </div>
+                </div>
+            </Drawer>
+
+        </div>
+      </div>
+</%block>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                columns: [
+                    {
+                        title: '业务名称',
+                        key: 'biz_name'
+                    },
+                    {
+                        title: '主机ip',
+                        key: 'ip'
+                    },
+                    {
+                        title: '操作',
+                        key: 'actiono',
+                        render: (h, params) => {
+                        return h('div', [
+                            h('a', {
+                                    style: {
+                                        marginRight: '15px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.delete_monitor(params.row)
+                                        }
+                                    }
+                                }, '取消监控'),
+                                h('a', {
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.monitorDrawer = true
+                                        }
+                                    }
+                                }, '监控详情')
+                        ]);
+
+        }
+                    }
+                ],
+            data:[],
+            monitorDrawer:false,
+            lineData: {
+              columns: ['date', 'memory', 'disk', 'cpu'],
+              rows: []
+            },
+            }
+        },
+     methods:{
+        monitor_list(){
+            axios.get(site_url+ "monitor/monitor_list").then(
+                res=> {
+                this.data = res.data.data
+            }
+            )
+        },
+        delete_monitor(row){
+           axios.get(site_url+ "monitor/delete/"+row.id).then(
+                res=> {
+               if(res.data.result){
+                   this.$Message.success('监控取消成功');
+                    }else {
+                    this.$Message.error('监控取消失败');
+                }
+               this.monitor_list()
+            })
+        }
+     },
+    created() {
+        this.monitor_list()
+    }
+    })
+</script>
+<style>
+ .flex{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .ivu-form-item{
+        flex: 0 0 30%;
+    }
+
+    .ivu-date-picker{
+        width: 100%;
+    }
+
+    .btn{
+        margin:0 0 20px 25px;
+    }
+
+    .cw-btn-group{
+        text-align: center;
+    }
+</style>

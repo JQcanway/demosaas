@@ -36,12 +36,13 @@ BK_PAAS_HOST = 'https://ios.corp.hq.csg'
 DEFAULT_BK_API_VER = 'v2'
 
 # 是否启用celery任务
-IS_USE_CELERY = False
+IS_USE_CELERY = True
 # 本地开发的 celery 的消息队列（RabbitMQ）信息
 BROKER_URL_DEV = 'amqp://guest:guest@127.0.0.1:5672/'
 # TOCHANGE 调用celery任务的文件路径, List of modules to import when celery starts.
 CELERY_IMPORTS = (
     'home_application.celery_tasks',
+    'task_three.views.py'
 )
 
 # ==============================================================================
@@ -117,7 +118,8 @@ INSTALLED_APPS = (
     'app_control',
     'account',
     'home_application',
-    'task_two'
+    'task_two',
+    'task_three'
 )
 
 # ==============================================================================

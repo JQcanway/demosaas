@@ -84,7 +84,24 @@
                    {
                         title: '云区域',
                         key: 'cloud_name'
-                    },
+                    },{
+                        title: '操作',
+                        key: 'actiono',
+                        render: (h, params) => {
+                        return h('div', [
+                            h('a', {
+                                    style: {
+                                        marginRight: '15px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.monitor(params.row)
+                                        }
+                                    }
+                                }, '性能监控')
+                        ]);
+                }
+                            }
                ],
                data: [],
                logContent:[],
@@ -116,6 +133,7 @@
                 })
             },
             search_host(ref){
+                this.select_business = ref
                axios.get(site_url+ "configuration/host/"+ref).then(
                    res=>{
                     this.data = res.data.data
@@ -149,6 +167,26 @@
                 }
                this.searchInfo.ip = idData
             },
+            monitor(host){
+                var hostData = {}
+                hostData['ip'] = host.innerip
+                hostData['bk_cloud_id'] = host.bk_cloud_id
+                    this.business.forEach(
+                      key => {
+                          if(key.value == this.searchInfo.business){
+                              hostData['biz_name'] = key.label
+                            hostData['biz_id'] = key.value
+                          }
+                })
+                axios.post(site_url+ "configuration/monitor/",hostData).then(
+                    res=>{
+                   if(res.data.result){
+                       this.$Message.success('监控添加成功');
+                        }else {
+                        this.$Message.error('监控添加失败');
+                    }
+                    })
+                },
             // 隐藏抽屉
             cancel() {
                 this.scriptDrawer = false
