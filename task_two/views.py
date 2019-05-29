@@ -81,4 +81,4 @@ def exec_script(request):
     return JsonResponse({'result':result.__str__().lower(),'logContent':logContent})
 
 def monitor(request):
-    return JsonResponse(add_monitor(request))
+    return add_monitor(request)

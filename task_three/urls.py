@@ -8,4 +8,5 @@ urlpatterns = patterns(
     (r'^$', 'home'),
     (r'^monitor_list/$', 'monitor_list'),
     (r'^delete/(\d+)$', 'monitor_delete'),
+    (r'^monitor_details/(.+)$', 'monitor_details'),
 )

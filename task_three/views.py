@@ -66,6 +66,15 @@ def exec_monitor():
             if( len(property) > 1):
                 Montitor.objects.create(MEMORY = property[1],DISK= property[2],CPU= property[3],DATE= property[0],IP=log['ip']).save()
 
+def monitor_details(request,ip):
+    print ip
+    data = Montitor.objects.filter(IP=ip)
+    list = []
+    for obj in data:
+        list.append({'date': obj.DATE, 'memory': obj.MEMORY.strip('%'), 'disk': obj.DISK.strip('%'), 'cpu': obj.CPU.strip('%')})
+
+    return JsonResponse({'data':list})
+
 
 
 
