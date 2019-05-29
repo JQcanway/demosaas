@@ -5,6 +5,7 @@ from django.shortcuts import render
 import json
 import time
 import sys
+from celery import task
 from celery.schedules import crontab
 from celery.task import periodic_task
 # Create your views here.
