@@ -10,6 +10,8 @@ from common.mymako import render_mako_context
 from task_three.admin import HostMonitor
 from task_three.admin import Montitor
 
+import datetime
+
 
 # 解决中文转码
 reload(sys)
