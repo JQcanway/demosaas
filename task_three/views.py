@@ -9,6 +9,8 @@ from django.http import JsonResponse
 from common.mymako import render_mako_context
 from task_three.admin import HostMonitor
 from task_three.admin import Montitor
+from home_application.admin import Script
+import time
 
 import datetime
 
@@ -23,6 +25,7 @@ from home_application.esb_helper import run_fast_execute_script,get_job_instance
 
 def home(request):
     id = request.GET.get('id')
+
     return render_mako_context(request, '/task_three/monitor.html', {"id": id})
 
 def add_monitor(request):
@@ -47,7 +50,7 @@ def monitor_details(request,ip):
     data = Montitor.objects.filter(IP=ip)
     list = []
     for obj in data:
-        list.append({'date': obj.DATE, 'memory': obj.MEMORY.strip('%'), 'disk': obj.DISK.strip('%'), 'cpu': obj.CPU.strip('%')})
+        list.append({'date': obj.DATE, 'memory': obj.MEMORY.strip('%'), 'disk': obj.DISK.strip('%'), 'cpu': (obj.CPU.strip()).strip('%')})
 
     return JsonResponse({'data':list})
 

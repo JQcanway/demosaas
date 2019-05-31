@@ -53,10 +53,6 @@ def get_time():
     run_every=crontab(minute='*/5', hour='*', day_of_week="*")：每 5 分钟执行一次任务
     periodic_task：程序运行时自动触发周期任务
     """
-    execute_task()
-    now = datetime.datetime.now()
-    print now
-
     data = HostMonitor.objects.all()
     salData = Script.objects.get(name='监控指标采集')
     list = []
@@ -78,7 +74,5 @@ def get_time():
             if (len(property) > 1):
                 Montitor.objects.create(MEMORY=property[1], DISK=property[2], CPU=property[3], DATE=property[0],
                                         IP=log['ip']).save()
-            logger.info(property)
-    Montitor.objects.create(MEMORY='20%', DISK='20%', CPU='20%', DATE=now,
-                            IP='127.0.0.1').save()
-    logger.error(u"celery 周期任务调用成功，当前时间：{}".format(now))
+
+    logger.error(u"celery 周期任务调用成功，当前时间： 监控指标采集")
