@@ -41,8 +41,7 @@ IS_USE_CELERY = True
 BROKER_URL_DEV = 'amqp://guest:guest@127.0.0.1:5672/'
 # TOCHANGE 调用celery任务的文件路径, List of modules to import when celery starts.
 CELERY_IMPORTS = (
-    # 'home_application.celery_tasks',
-    'task_three.views'
+    'home_application.celery_tasks'
 )
 
 # ==============================================================================

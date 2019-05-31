@@ -6,15 +6,17 @@ celery 任务示例
 周期性任务还需要启动celery调度命令：python  manage.py  celerybeat --settings=settings
 """
 import datetime
-import json
 
-import requests
 from celery import task
 from celery.schedules import crontab
 from celery.task import periodic_task
-from django.http import JsonResponse
 
 from common.log import logger
+from home_application.admin import Script
+from home_application.esb_helper import run_fast_execute_script, get_job_instance_log
+from task_three.admin import Montitor
+from task_three.admin import HostMonitor
+import time
 
 
 @task()
@@ -54,4 +56,27 @@ def get_time():
     execute_task()
     now = datetime.datetime.now()
     print now
+
+    data = HostMonitor.objects.all()
+    salData = Script.objects.get(name='监控指标采集')
+    list = []
+    for obj in data:
+        list.append(obj.toJson())
+    hostData = {}
+    for n in list:
+        hostData.setdefault(n['biz_id'], []).append(n)
+    for key in hostData.keys():
+        ip = []
+        for host in hostData.get(key):
+            ipData = {"ip": host['ip'], "bk_cloud_id": host['bk_cloud_id']}
+            ip.append(ipData)
+        execData = run_fast_execute_script(key, salData.content, ip)
+        time.sleep(10)
+        logData = get_job_instance_log(key, execData['data'])
+        for log in logData:
+            property = log['log_content'].split('.')
+            if (len(property) > 1):
+                Montitor.objects.create(MEMORY=property[1], DISK=property[2], CPU=property[3], DATE=property[0],
+                                        IP=log['ip']).save()
+
     logger.error(u"celery 周期任务调用成功，当前时间：{}".format(now))

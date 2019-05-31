@@ -3,17 +3,13 @@
 from django.shortcuts import render
 
 import json
-import time
 import sys
-from celery import task
-from celery.schedules import crontab
-from celery.task import periodic_task
 # Create your views here.
 from django.http import JsonResponse
 from common.mymako import render_mako_context
 from task_three.admin import HostMonitor
-from home_application.admin import Script
 from task_three.admin import Montitor
+
 
 # 解决中文转码
 reload(sys)
@@ -43,29 +39,6 @@ def monitor_list(request):
 def monitor_delete(request,id):
      HostMonitor.objects.filter(id = id ).delete()
      return JsonResponse({'result':'true'})
-
-@periodic_task(run_every=crontab(minute='*/5', hour='*', day_of_week="*"))
-def exec_monitor():
-    data = HostMonitor.objects.all()
-    salData = Script.objects.get(name='监控指标采集')
-    list = []
-    for obj in data:
-        list.append(obj.toJson())
-    hostData = {}
-    for n in list:
-        hostData.setdefault(n['biz_id'], []).append(n)
-    for key in hostData.keys():
-        ip =[]
-        for host in hostData.get(key):
-            ipData = {"ip": host['ip'], "bk_cloud_id": host['bk_cloud_id']}
-            ip.append(ipData)
-        execData = run_fast_execute_script(key,salData.content,ip)
-        time.sleep(10)
-        logData = get_job_instance_log(key,execData['data'])
-        for log in logData:
-            property = log['log_content'].split('.')
-            if( len(property) > 1):
-                Montitor.objects.create(MEMORY = property[1],DISK= property[2],CPU= property[3],DATE= property[0],IP=log['ip']).save()
 
 def monitor_details(request,ip):
     print ip
