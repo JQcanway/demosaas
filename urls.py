@@ -20,6 +20,8 @@ urlpatterns = patterns(
     url(r'^configuration/', include('task_two.urls')),
     # task_three(里开始开发第三次作业主要功能
     url(r'^monitor/', include('task_three.urls')),
+    # task_four(里开始开发第四次作业主要功能
+    url(r'^task/', include('task_four.urls')),
     # 在home_application(根应用)里开始开发你的应用的主要功能
     url(r'^', include('home_application.urls')),
 

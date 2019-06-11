@@ -1,0 +1,355 @@
+<%inherit file="/base.html"/>
+<%block name="content">
+ <div class="home-page" id="app">
+    <div class="cw-search-box">
+        <P style="font-size:30px;">任务中心</P>
+        <i-form :model="searchInfo" label-position="right" :label-width="80" class="flex">
+            <form-item  label="业务名称:">
+                <i-select v-model="searchInfo.business" clearable>
+                    <i-option :value="item.label" v-for="(item,index) in business" :key="index">{{item.label}}</i-option>
+                </i-select>
+            </form-item>
+            <form-item  label="模板类型:">
+                <i-select v-model="searchInfo.template_type" clearable>
+                    <i-option :value="item.value" v-for="(item,index) in template_type" :key="index">{{item.label}}</i-option>
+                </i-select>
+            </form-item>
+            <form-item  label="任务状态:">
+                <i-select v-model="searchInfo.task_state" clearable>
+                    <i-option :value="item.value" v-for="(item,index) in task_state" :key="index">{{item.label}}</i-option>
+                </i-select>
+            </form-item>
+            <form-item label="创建人:">
+                    <i-input v-model="searchInfo.creator" clearable></i-input>
+            </form-item>
+            <form-item label="模板名称:">
+                    <i-input v-model="searchInfo.name" clearable></i-input>
+            </form-item>
+            <form-item label="操作识别号:">
+                    <i-input v-model="searchInfo.handle" clearable></i-input>
+            </form-item>
+        </i-form>
+            <i-button type="primary" class="btn" @click="search">查询</i-button>
+            <i-table :columns="columns" :data="data"></i-table>
+    </div>
+
+     <!-- 处理代办事项 -->
+        <Drawer title="处理代办事项"
+            v-model="commissionCenter"
+            :closable="false"
+            :mask-closable="false"
+            width="800">
+            <div style="padding: 0 15px">
+                <i-form
+                    :model="center"
+                    ref="center"
+                    :label-width="100">
+                    <i-table :columns="commissionColumns" :data="commissionData"></i-table>
+                    <Form-item>
+                        <div class="cw-btn-group">
+                            <i-button type="normal" @click="cancel">取消</i-button>
+                        </div>
+                    </Form-item>
+                </i-form>
+            </div>
+        </Drawer>
+
+     <!-- 处理代办事项 -->
+        <Drawer title="查看代办事项"
+            v-model="lookCommission"
+            :closable="false"
+            :mask-closable="false"
+            width="800">
+            <div style="padding: 0 15px">
+                <i-form
+                    :model="center"
+                    ref="center"
+                    :label-width="100">
+                    <i-table :columns="commissionDetails" :data="commissionData"></i-table>
+                    <Form-item>
+                        <div class="cw-btn-group">
+                            <i-button type="normal" @click="cancel">取消</i-button>
+                        </div>
+                    </Form-item>
+                </i-form>
+            </div>
+        </Drawer>
+
+ </div>
+</%block>
+<script>
+      new Vue({
+          el: '#app',
+          data: function () {
+              return{
+                  data:[],
+                business: [
+                ],
+                   center:{
+                'business':'',
+                'template_type':'',
+                'name':'',
+                'creator':'',
+                'handle':'',
+                'filePath':''
+            },
+                  commissionData:[],
+                  commissionCenter:false,
+                  lookCommission:false,
+                  template_type: [
+                {
+                    label: '变更发布',
+                    value: '变更发布'
+                },
+                {
+                    label: '扩缩容',
+                    value: '扩缩容'
+                },
+                {
+                    label: '上线类',
+                    value: '上线类'
+                },
+                {
+                    label: '下架类',
+                    value: '下架类'
+                } ,
+                {
+                    label: '例行维护',
+                    value: '例行维护'
+                }
+            ],
+          task_state: [
+                {
+                    label: '待操作',
+                    value: '待操作'
+                },
+                {
+                    label: '操作中',
+                    value: '操作中'
+                },
+                {
+                    label: '已完成',
+                    value: '已完成'
+                }
+            ],
+              commissionColumns:[{
+                        title: '序号',
+                        key: 'index'
+                    },
+                    {
+                        title: '操作事项',
+                        key: 'matter'
+                    },
+                    {
+                        title: '备注',
+                        key: 'remarks'
+                    },
+                    {
+                        title: '负责人',
+                        key: 'responsible'
+                    },
+                    {
+                        title: '状态',
+                        key: 'state'
+                    },
+                  {
+                        title: '操作',
+                        key: 'actiono',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('a', {
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.finish_commission(params.row)
+                                        }
+                                    }
+                                }, '完成代办')
+                            ]);
+                        }
+                    }],
+              commissionDetails:[
+                  {
+                        title: '序号',
+                        key: 'index'
+                    },
+                    {
+                        title: '操作事项',
+                        key: 'matter'
+                    },
+                    {
+                        title: '备注',
+                        key: 'remarks'
+                    },
+                    {
+                        title: '负责人',
+                        key: 'responsible'
+                    },
+                    {
+                        title: '状态',
+                        key: 'state'
+                    },
+                  {
+                        title: '确定人',
+                        key: 'confirmor'
+                    },
+                  {
+                        title: '确定时间',
+                        key: 'confirm_time'
+                    },
+              ],
+              columns: [
+                    {
+                        title: '模板名称',
+                        key: 'name'
+                    },
+                    {
+                        title: '操作识别号',
+                        key: 'handle'
+                    },
+                    {
+                        title: '业务名称',
+                        key: 'business'
+                    },
+                    {
+                        title: '模板类型',
+                        key: 'template_type'
+                    },
+                   {
+                        title: '可操作者',
+                        key: 'operator'
+                    },
+                    {
+                        title: '创建者',
+                        key: 'creator'
+                    },
+                    {
+                        title: '创建时间',
+                        key: 'created_time'
+                    },
+                  {
+                        title: '状态',
+                        key: 'task_state'
+                    },
+                    {
+                        title: '操作',
+                        key: 'actiono',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('a', {
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.look_commission(params.row.id)
+                                        }
+                                    }
+                                }, '查看'),
+                                h('a', {
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.operation_commission(params.row.id)
+                                        }
+                                    }
+                                }, '处理代办事务')
+                            ]);
+                        }
+                    }
+                ],
+                  searchInfo: {
+                      'id':'',
+                   'business':'',
+                  'template_type':'',
+                  'task_state':'',
+                  'operator':'',
+                  'name':'',
+                  'handle':'',
+                  'creator':'',
+                'created_time':'',
+                },
+              }
+          },
+        methods: {
+             search_business(){
+                axios.get(site_url+ "configuration/business/").then(res=>{
+                    this.business = res.data.data
+                })
+            },
+            search(){
+                axios.get(site_url + "task/center/list", {
+                    params: this.searchInfo
+                }).then(
+                    res =>{
+                  this.data = res.data.data
+                }
+                )
+            },
+        operation_commission(row){
+            this.commissionCenter = true
+            axios.get(site_url + "task/commission/list/"+row, {
+                    params: this.searchInfo
+                }).then(
+                    res =>{
+                  this.commissionData = res.data.data
+                })
+        },
+        look_commission(row){
+            this.lookCommission = true
+            axios.get(site_url + "task/commission/list/"+row, {
+                    params: this.searchInfo
+                }).then(
+                    res =>{
+                  this.commissionData = res.data.data
+                })
+        },
+        finish_commission(row){
+             axios.get(site_url + "task/commission/finish/"+row.center_id+"/"+row.id).then(
+                    res => {
+                        if (res.data.result) {
+                            this.$Message.success('操作成功');
+                        }else {
+                            this.$Message.error('操作失败');
+                            }
+                } )
+
+            this.operation_commission(row.center_id)
+            this.search()
+        },
+        cancel(){
+              this.commissionCenter = false
+                this.lookCommission = false
+            }
+        },
+          created() {
+              this.search_business()
+              this.search()
+        }
+      })
+</script>
+<style>
+ .flex{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .ivu-form-item{
+        flex: 0 0 30%;
+    }
+
+    .ivu-date-picker{
+        width: 100%;
+    }
+
+    .btn{
+        margin:0 0 20px 25px;
+    }
+
+    .cw-btn-group{
+        text-align: center;
+    }
+</style>

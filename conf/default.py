@@ -118,7 +118,8 @@ INSTALLED_APPS = (
     'account',
     'home_application',
     'task_two',
-    'task_three'
+    'task_three',
+    'task_four'
 )
 
 # ==============================================================================
