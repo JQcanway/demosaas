@@ -429,3 +429,20 @@ def cc_search_host_ByBizId(biz_id, username="admin"):
     result = json.loads(response.content)
 
     return result
+
+def cc_search_user(username='admin'):
+    """
+    查询所有用户
+    """
+    url = BK_PAAS_HOST + '/api/c/compapi/v2/bk_login/get_all_users/'
+
+    # region 请求json数据
+    content = {
+        "bk_app_code": APP_ID,
+        "bk_app_secret": APP_TOKEN,
+        "bk_username": username,
+        "bk_role": 1
+    }
+    response = requests.post(url, json.dumps(content), verify=False)
+    result = json.loads(response.content)
+    return result
