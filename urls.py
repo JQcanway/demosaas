@@ -24,6 +24,8 @@ urlpatterns = patterns(
     url(r'^task/', include('task_four.urls')),
     # task_five(里开始开发第五次作业主要功能
     url(r'^work_manage/', include('task_five.urls')),
+    # exam_one(里开始开发第1次考试主要功能
+    url(r'^api/', include('exam_one.urls')),
     # 在home_application(根应用)里开始开发你的应用的主要功能
     url(r'^', include('home_application.urls')),
 
