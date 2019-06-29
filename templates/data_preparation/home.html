@@ -49,7 +49,7 @@
 
                 <form-item label="关联业务:">
                         <i-select v-model="formItem.business" clearable>
-                            <i-option :value="item.value" v-for="(item,index) in business" :key="index">{{item.label}}</i-option>
+                            <i-option :value="item.label" v-for="(item,index) in business" :key="index">{{item.label}}</i-option>
                         </i-select>
                 </form-item>
 
@@ -103,6 +103,61 @@
             </div>
         </Drawer>
 
+
+        <Drawer title="考试详情"
+            v-model="detailsData"
+            :closable="false"
+            :mask-closable="false"
+            width="800">
+            <div style="padding: 0 15px">
+                <i-form
+                    :model="details"
+                    ref="details"
+                    :label-width="100">
+
+                    <Form-item label="考试名称：" prop="name">
+                        <i-input v-model="details.name"  :disabled="true"></i-input>
+                    </Form-item>
+
+                    <Form-item label="类型：" prop="exam_type">
+                        <i-input v-model="details.exam_type"  :disabled="true"></i-input>
+                    </Form-item>
+
+                    <Form-item label="关联业务：" prop="business">
+                        <i-input v-model="details.business"  :disabled="true"></i-input>
+                    </Form-item>
+
+                    <Form-item label="地点：" prop="site">
+                        <i-input v-model="details.site"  :disabled="true"></i-input>
+                    </Form-item>
+
+                    <Form-item label="时间：" prop="exam_date">
+                        <i-input v-model="details.exam_date"  :disabled="true"></i-input>
+                    </Form-item>
+
+                    <Form-item label="负责人：" prop="principal">
+                        <i-input v-model="details.principal"  :disabled="true"></i-input>
+                    </Form-item>
+
+                    <Form-item label="联系方式：" prop="phone">
+                        <i-input v-model="details.phone"  :disabled="true"></i-input>
+                    </Form-item>
+
+                    <Form-item label="考试题目：" prop="filePath">
+                        <i-input v-model="details.filePath"  :disabled="true"></i-input>
+                    </Form-item>
+
+
+                    <Form-item>
+                        <div class="cw-btn-group">
+                            <!-- 按钮启用/禁用控制（:disabled） -->
+                            <i-button type="normal" @click="cancel">取消</i-button>
+                        </div>
+                    </Form-item>
+                </i-form>
+            </div>
+        </Drawer>
+
     </div>
 </%block>
 <script>
@@ -111,6 +166,7 @@
          data: function () {
              return {
                  creatEexam:false,
+                 detailsData:false,
                  data:[],
                  business:[],
                  hosts:[],
@@ -121,6 +177,16 @@
                     exam_type:'',
                      principal:'',
                     },
+                 details:{
+                    business:'',
+                     name:'',
+                     exam_type:'',
+                     principal:'',
+                     phone:'',
+                     exam_date:'',
+                     site:'',
+                     filePath:'',
+                 },
                  formItem:{
                     business:'',
                      name:'',
@@ -201,7 +267,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.show_data(params.row.id)
+                                            this.show_data(params.row)
                                         }
                                     }
                                 }, '详情'),
@@ -281,7 +347,8 @@
           },
           //显示详情
           show_data(row){
-
+            this.details = row
+            this.detailsData = true
           },
             // 条件查询
             search(){
@@ -293,6 +360,7 @@
             },
           cancel(){
               this.creatEexam = false
+              this.detailsData = false
           },
           handleSuccess(res,file){
                 this.formItem.filePath = res.data

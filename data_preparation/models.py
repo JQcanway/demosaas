@@ -25,6 +25,7 @@ class Exam(models.Model):
     def toJson(self):
         data = {}
         data['id'] = self.id
+        data['business'] = self.business
         data['name'] = self.name
         data['exam_type'] = self.exam_type
         data['principal'] = self.principal
