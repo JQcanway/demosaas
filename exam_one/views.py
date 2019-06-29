@@ -42,9 +42,14 @@ def template_list(request):
     listData = []
     for obj in data:
         listData.append(obj.toJson())
-
     return JsonResponse({'data': listData})
 
 def template_delete(request,id):
     Template.objects.filter(id=id).delete()
     return JsonResponse({'result': 'true'})
+
+def template_select(request):
+    listData = []
+    for obj in Template.objects.all():
+        listData.append({'title': obj.name,'key': obj.name})
+    return JsonResponse({'data': listData})

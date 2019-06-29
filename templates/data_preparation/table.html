@@ -1,0 +1,45 @@
+
+<%inherit file="/base.html"/>
+
+<%block name="content">
+
+<!-- 列表表格 -->
+
+<i-table :columns="columns" :data="data"></i-table>
+
+
+</%block>
+<script>
+
+    data:[],
+    buttonType;false,
+    columns: [
+                    {
+                        title: '名称',
+                        key: 'name'
+                    }
+                    {
+                        title: '操作',
+                        key: 'actiono',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small',
+                                        disabled:'buttonType'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.edit(params.row.id)
+                                        }
+                                    }
+                                }, '编辑'),
+                            ]);
+                        }
+                    }
+                ],
+ </script>

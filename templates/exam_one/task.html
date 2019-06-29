@@ -18,6 +18,49 @@
             <i-button type="primary" class="btn" @click="search">查询</i-button>
             <i-table :columns="columns" :data="data"></i-table>
         </div>
+
+        <!-- 新建模板 -->
+        <Drawer title="新建模板"
+            v-model="createTask"
+            :closable="false"
+            :mask-closable="false"
+            width="800">
+            <div style="padding: 0 15px">
+                <i-form
+                    :model="formItem"
+                    ref="formItem"
+                    :rules="ruleValidate"
+                    :label-width="100">
+                    <Form-item label="业务名称：" prop="business">
+                        <Radio-Group v-model="formItem.business">
+                            <Radio class="cw-radio" v-for="(item, index) in business" :key="item.label" :label="item.label"></Radio>
+                        </Radio-Group>
+                    </Form-item>
+                    <Form-item label="巡检模板：" prop="template">
+                        <Radio-Group v-model="formItem.template">
+                            <Radio class="cw-radio" v-for="(item, index) in template" :key="item.label" :label="item.label"></Radio>
+                        </Radio-Group>
+                    </Form-item>
+                    <Form-item label="任务名称：" prop="name">
+                        <i-input v-model="formItem.name" placeholder="请输入..."></i-input>
+                    </Form-item>
+                    <Form-item label="任务类型" prop="task_type">
+                         <Radio-Group v-model="formItem.task_type">
+                            <Radio class="cw-radio" v-for="(item, index) in task_type" :key="item.label" :label="item.label"></Radio>
+                        </Radio-Group>
+                    </Form-item>
+                   <Form-item label="巡检服务器：" prop="host">
+                        <i-input v-model="formItem.host" ></i-input>
+                    </Form-item>
+                    <Form-item>
+                        <div class="cw-btn-group">
+                            <i-button type="primary" @click="handleCreate" style="margin-right: 15px">确定</i-button>
+                            <i-button type="normal" @click="cancel">取消</i-button>
+                        </div>
+                    </Form-item>
+                </i-form>
+            </div>
+        </Drawer>
    </div>
 </%block>
 
@@ -27,6 +70,25 @@
         data: function () {
             return {
                 data:[],
+                business:[],
+                createTask:false,
+                formItem :{
+
+                },
+                ruleValidate: {
+                    name: [
+                        { required: true, message: '脚本名称不能为空', trigger: 'blur' }
+                    ],
+                    script: [
+                        { required: true, message: '脚本内容不能为空', trigger: 'blur' }
+                    ],
+                    threshold: [
+                        { required: true,message: '阈值不能为空', trigger: 'blur' }
+                    ],
+                    business: [
+                        { required: true, message: '业务名称不能为空', trigger: 'blur' }
+                    ]
+                },
                 columns: [
                    {
                        title: '任务名称',
@@ -86,8 +148,11 @@
             search(){
 
             },
-            task_create(){
+            handleCreate (){
 
+            },
+            task_create(){
+                this.createTask = true
             },
             look_report(){
 
@@ -97,6 +162,9 @@
                     this.business = res.data.data
                 })
             },
+            cancel(){
+               this.createTask = false
+            }
         },
         created() {
             this.search_business()

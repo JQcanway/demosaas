@@ -38,7 +38,7 @@
             <div class="collapse navbar-collapse navbar-responsive-collapse">
                 <ul class="nav navbar-nav">
                   <%
-                    home = dev_guide = contactus = test= modal =task= work_manage =''
+                    home = dev_guide = contactus = test= modal= data_preparation= ''
                     relative_path = APP_PATH
                     if relative_path == SITE_URL or relative_path.startswith(SITE_URL + "?"):
                       home = 'king-navbar-active'
@@ -50,23 +50,13 @@
                       test = 'king-navbar-active'
                     elif relative_path.startswith(SITE_URL + "modal/"):
                       modal = 'king-navbar-active'
-                    elif relative_path.startswith(SITE_URL + "task/"):
-                      task = 'king-navbar-active'
-                    elif relative_path.startswith(SITE_URL + "work_manage/"):
-                      work_manage = 'king-navbar-active'
+                    elif relative_path.startswith(SITE_URL + "data_preparation/"):
+                      data_preparation = 'king-navbar-active'
                   %>
                   <li class="${home}"><a href="${SITE_URL}"><span>首页</span></a></li>
                     <li class="${test}"><a href="${SITE_URL}test/"><span>echarts图表</span></a></li>
                     <li class="${modal}"><a href="${SITE_URL}modal/"><span>模态窗</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}script/"><span>脚本</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}configuration/"><span>作业2</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}monitor/"><span>作业3</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}task/center/"><span>作业4.1</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}task/template/"><span>作业4.2</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}work_manage/work/"><span>作业5.1</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}work_manage/approval/"><span>作业5.2</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}api/template/"><span>考试1.1</span></a></li>
-                    <li class="${modal}"><a href="${SITE_URL}api/task/"><span>考试1.2</span></a></li>
+                    <li class="${modal}"><a href="${SITE_URL}data_preparation/"><span>考试2</span></a></li>
                  <!-- <li class="${dev_guide}"><a href="${SITE_URL}dev-guide/"><span>开发指引</span></a></li>
                   <li class="${contactus}"><a href="${SITE_URL}contactus/"><span>联系我们</span></a></li>-->
                 </ul>
