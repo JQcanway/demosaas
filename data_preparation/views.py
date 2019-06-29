@@ -97,7 +97,7 @@ def exam_add(request):
 
 def exam_upload(request):
     filedata = request.FILES.get('file')
-    path = default_storage.save(os.getcwd()+"/"+filedata.name,ContentFile(filedata.read()))
+    path = default_storage.save(os.getcwd()+"/static/file/"+filedata.name,ContentFile(filedata.read()))
     return JsonResponse({'data':path})
 
 
