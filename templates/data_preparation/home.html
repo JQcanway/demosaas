@@ -147,6 +147,9 @@
                         <i-input v-model="details.filePath"  :disabled="true"></i-input>
                     </Form-item>
 
+                    <Form-item >
+                       <i-table :columns="examinee_columns" :data="examinee_data"></i-table>
+                    </Form-item>
 
                     <Form-item>
                         <div class="cw-btn-group">
@@ -168,6 +171,7 @@
                  creatEexam:false,
                  detailsData:false,
                  data:[],
+                 examinee_data:[],
                  business:[],
                  hosts:[],
                  principal:[],
@@ -227,6 +231,28 @@
                         { required: true, message: '考试地址不能为空', trigger: 'blur' }
                     ],
                 },
+                 examinee_columns:[
+                     {
+                        title: '考生',
+                        key: 'name'
+                    },
+                     {
+                        title: '部门',
+                        key: 'department'
+                    },
+                     {
+                        title: '得分',
+                        key: 'score'
+                    },
+                     {
+                        title: '结果',
+                        key: 'result'
+                    },
+                     {
+                        title: '备注',
+                        key: 'desc'
+                    },
+                 ],
                  columns: [
                     {
                         title: '业务名称',
