@@ -14,12 +14,12 @@ urlpatterns = patterns(
     (r'^search_users/$', 'search_users'),
 
     #查询考试列表
-    (r'^exam_add$', 'exam_add'),
-    (r'^exam_upload$', 'exam_upload'),
+    (r'^add$', 'add'),
+    (r'^upload$', 'upload'),
     #查询考试列表
-    (r'^exam_list$', 'exam_list'),
+    (r'^list$', 'list'),
     # 查询考试详情
     (r'^exam_one/(\d+)$', 'exam_one'),
     # 查询考试删除
-    (r'^exam_delete/(\d+)$', 'exam_delete'),
+    (r'^delete/(\d+)$', 'delete'),
 )

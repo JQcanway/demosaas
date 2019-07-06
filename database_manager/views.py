@@ -8,7 +8,8 @@ from django.http import JsonResponse
 from common.mymako import render_mako_context
 
 from data_preparation.service import cc_search_biz,cc_search_host_ByBizId,cc_search_user
-from admin import Examinee,Exam
+
+from database_manager.admin import Custom
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -18,9 +19,9 @@ import os
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
 
-def home(request):
+def custom_home(request):
     id = request.GET.get('id')
-    return render_mako_context(request, '/data_preparation/home.html', {"id": id})
+    return render_mako_context(request, '/database_manager/custom.html', {"id": id})
 
 def search_biz(request):
     data = cc_search_biz(request.user.username)
@@ -54,50 +55,37 @@ def search_host(request,bizId):
 def search_users(request):
     return JsonResponse(cc_search_user(), safe=False)
 
-# 考试列表查询
+# 列表查询
 def list(request):
     name = request.GET.get('name')
     if name:
-        data = Exam.objects.filter(name__contains=name)
+        data = Custom.objects.filter(name__contains=name)
     else:
-        data = Exam.objects.filter(name__contains='')
+        data = Custom.objects.filter(name__contains='')
 
-    site = request.GET.get('site')
-    if site:
-        data = Exam.objects.filter(site__contains=site)
-
-    exam_type = request.GET.get('exam_type')
-    if exam_type:
-        data = Exam.objects.filter(exam_type=exam_type)
-
-    principal = request.GET.get('principal')
-    if principal:
-        data = Exam.objects.filter(principal=principal)
+    type = request.GET.get('type')
+    if type:
+        data = Custom.objects.filter(type=type)
 
     listData = []
     for obj in data:
         listData.append(obj.toJson())
     return JsonResponse({'data': listData})
 
-# 考试详情查询
-def exam_one(request,id):
-
-    return JsonResponse(cc_search_user(), safe=False)
-
-# 考试删除
+# 删除
 def delete(request,id):
-    Exam.objects.filter(id=id).delete()
+    Custom.objects.filter(id=id).delete()
     return JsonResponse({'result': 'true'})
 
 def add(request):
     data = json.loads(request.body)
-    exam = Exam(business=data['business'],name=data['name'],exam_type=data['exam_type'],principal=data['principal'],phone=data['phone'],exam_date=datetime.datetime.strptime(str(data['exam_date']).split('T')[0], '%Y-%m-%d'),site=data['site'],filePath=data['filePath'])
+    exam = Custom(name=data['name'],type=data['type'],field_name=data['field_name'],desc=data['desc'])
     exam.save()
     return JsonResponse({'result': 'true'})
 
-def upload(request):
+def exam_upload(request):
     filedata = request.FILES.get('file')
-    path = default_storage.save(os.getcwd()+"/static/"+filedata.name,ContentFile(filedata.read()))
+    path = default_storage.save(os.getcwd()+"/static/file/"+filedata.name,ContentFile(filedata.read()))
     return JsonResponse({'data':path})
 
 

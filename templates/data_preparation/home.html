@@ -8,25 +8,6 @@
         <div class="cw-search-box">
             <i-form :model="searchInfo" label-position="right" :label-width="80" class="flex">
 
-            <form-item label="考试名称：">
-                <i-input v-model="searchInfo.name" placeholder="请输入..."></i-input>
-            </form-item>
-
-            <form-item label="考试地点：">
-                <i-input v-model="searchInfo.name" placeholder="请输入..."></i-input>
-            </form-item>
-
-            <form-item label="考试类型:">
-                    <i-select v-model="searchInfo.exam_type" clearable>
-                        <i-option :value="item.label" v-for="(item,index) in exam_type" :key="index">{{item.label}}</i-option>
-                    </i-select>
-            </form-item>
-
-            <form-item label="考试负责人:">
-                <i-select v-model="searchInfo.principal" clearable>
-                    <i-option :value="item.bk_username" v-for="(item,index) in principal" :key="index">{{item.bk_username}}</i-option>
-                </i-select>
-            </form-item>
 
           </i-form>
             <i-button type="primary" class="btn" @click="creatEexam=true">新增</i-button>
@@ -326,7 +307,7 @@
             },
               //删除考试
               delete_data(row){
-                axios.post(site_url + "data_preparation/exam_delete/"+row).then(
+                axios.post(site_url + "data_preparation/delete/"+row).then(
                    res => {
                      this.cancel()
                     if (res.data.result) {
@@ -360,7 +341,7 @@
                 })
             },
           create(){
-                axios.post(site_url + "data_preparation/exam_add",this.formItem).then(
+                axios.post(site_url + "data_preparation/add",this.formItem).then(
                    res => {
                      this.cancel()
                     if (res.data.result) {
@@ -378,7 +359,7 @@
           },
             // 条件查询
             search(){
-                axios.get(site_url+ "data_preparation/exam_list",{
+                axios.get(site_url+ "data_preparation/list",{
                     params: this.searchInfo
                 }).then(res=>{
                     this.data = res.data.data

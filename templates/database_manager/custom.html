@@ -1,0 +1,217 @@
+<%inherit file="/base.html"/>
+
+<%block name="content">
+
+<!-- 初始化 -->
+
+    <div class="home-page" id="app">
+        <div class="cw-search-box">
+            <i-form :model="searchInfo" label-position="right" :label-width="80" class="flex">
+                 <Form-item label="显示名称：" prop="name">
+                    <i-input v-model="searchInfo.name"  ></i-input>
+                </Form-item>
+               <form-item label="类型:">
+                        <i-select v-model="searchInfo.type" clearable>
+                            <i-option :value="item.label" v-for="(item,index) in type" :key="index">{{item.label}}</i-option>
+                        </i-select>
+                </form-item>
+            </i-form>
+            <i-button type="primary" class="btn" @click="creatEexam=true">新增</i-button>
+            <i-button type="primary" class="btn" @click="search">查询</i-button>
+        </div>
+
+        <i-table :columns="columns" :data="data"></i-table>
+
+        <Drawer title="创建考试"
+            v-model="creatEexam"
+            :closable="false"
+            :mask-closable="false"
+            width="800">
+            <div style="padding: 0 15px">
+                <i-form
+                    :model="formItem"
+                    ref="formItem"
+                    :rules="ruleValidate"
+                    :label-width="100">
+
+                    <form-item label="数据库类型:">
+                         <i-select v-model="formItem.type" clearable>
+                            <i-option :value="item.label" v-for="(item,index) in type" :key="index">{{item.label}}</i-option>
+                        </i-select>
+                </form-item>
+
+                 <Form-item label="名称：" prop="name">
+                    <i-input v-model="formItem.name" placeholder="请输入..."></i-input>
+                </Form-item>
+
+                <Form-item label="字段名：" prop="name">
+                    <i-input v-model="formItem.field_name" placeholder="请输入..."></i-input>
+                </Form-item>
+                <Form-item label="备注" prop="desc">
+                    <i-input v-model="formItem.desc" type="textarea" ></i-input>
+                </Form-item>
+
+                    <Form-item>
+                        <div class="cw-btn-group">
+                            <!-- 按钮启用/禁用控制（:disabled） -->
+                            <i-button type="primary" @click="handleCreate" style="margin-right: 15px" >确定</i-button>
+                            <i-button type="normal" @click="cancel">取消</i-button>
+                        </div>
+                    </Form-item>
+                </i-form>
+            </div>
+        </Drawer>
+    </div>
+</%block>
+<script>
+      new Vue({
+         el: '#app',
+         data: function () {
+             return {
+                 formItem:{
+                    name:'',
+                     type:'',
+                     field_name:'',
+                     desc:''
+                 },
+                 ruleValidate: {
+                    name: [
+                        { required: true, message: '显示名称不能为空', trigger: 'blur' }
+                    ],
+                    type: [
+                        { required: true, message: '类型不能为空', trigger: 'blur' }
+                    ],
+                    field_name: [
+                        { required: true, message: '字段名不能为空', trigger: 'blur' }
+                    ]
+                },
+                 creatEexam:false,
+                 data:[],
+                 columns: [
+                    {
+                        title: '显示名称',
+                        key: 'name'
+                    },
+                     {
+                        title: '类型',
+                        key: 'type'
+                    },
+                     {
+                        title: '字段名',
+                        key: 'field_name'
+                    },
+                     {
+                        title: '备注',
+                        key: 'desc'
+                    },
+                    {
+                        title: '操作',
+                        key: 'actiono',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'error'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.delete(params.row.id)
+                                        }
+                                    }
+                                }, '删除')
+                            ]);
+                        }
+                    },
+                ],
+                 type:[
+                    {
+                       label:'Oracle',
+                       value:'Oracle'
+                   },
+                   {
+                       label:'Mysql',
+                       value:'Mysql'
+                   },],
+                 searchInfo:{
+                     name:'',
+                     tupe:''
+                 }
+             }
+         },
+           methods: {
+             // 条件查询
+            search(){
+                axios.get(site_url+ "database_manager/custom/list",{
+                    params: this.searchInfo
+                }).then(res=>{
+                    this.data = res.data.data
+                })
+            },
+           delete(row){
+                axios.post(site_url + "database_manager/custom/delete/"+row).then(
+                                   res => {
+                                     this.cancel()
+                                    if (res.data.result) {
+                                        this.$Message.success('删除成功');
+                                    } else {
+                                        this.$Message.error('删除失败');
+                                    }
+                                    this.search()
+                               } )
+           },
+           handleCreate(){
+                this.$refs['formItem'].validate((valid) => {
+                                    if (valid) {
+                                        this.create()
+                                    } else {
+                                        this.$Message.error('表单存在未填字段!');
+                                    }
+                                })
+           },
+           create(){
+                axios.post(site_url + "database_manager/custom/add",this.formItem).then(
+                   res => {
+                     this.cancel()
+                    if (res.data.result) {
+                        this.$Message.success('添加成功');
+                    } else {
+                        this.$Message.error('添加失败');
+                    }
+                    this.search()
+               } )
+          },
+           cancel(){
+             this.creatEexam = false
+           },
+
+           },
+          created(){
+            this.search()
+      }
+    })
+</script>
+<style>
+ .flex{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .ivu-form-item{
+        flex: 0 0 30%;
+    }
+
+    .ivu-date-picker{
+        width: 100%;
+    }
+
+    .btn{
+        margin:0 0 20px 25px;
+    }
+
+    .cw-btn-group{
+        text-align: center;
+    }
+</style>
