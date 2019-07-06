@@ -4,10 +4,11 @@ from django.conf.urls import patterns
 
 urlpatterns = patterns(
     'home_application.views',
+    (r'^test$', 'test'),
     (r'^$', 'home'),
     (r'^dev-guide/$', 'dev_guide'),
     (r'^contactus/$', 'contactus'),
-    (r'^test/$', 'test'),
+    (r'^test$', 'test'),
     (r'^modal/$', 'modal'),
     (r'^api/getJson/$', 'getJson'),
     (r'^api/getEchartsJson/$', 'getEchartsJson'),

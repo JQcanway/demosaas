@@ -18,8 +18,8 @@ urlpatterns = patterns(
     (r'^upload$', 'upload'),
     #查询考试列表
     (r'^list$', 'list'),
-    # 查询考试详情
-    (r'^exam_one/(\d+)$', 'exam_one'),
+    # 查询主机详情
+    (r'^one/(\d+)$', 'one'),
     # 查询考试删除
     (r'^delete/(\d+)$', 'delete'),
 )

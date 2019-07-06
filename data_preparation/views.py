@@ -7,8 +7,8 @@ import sys
 from django.http import JsonResponse
 from common.mymako import render_mako_context
 
-from data_preparation.service import cc_search_biz,cc_search_host_ByBizId,cc_search_user
-from admin import Examinee,Exam
+from data_preparation.service import cc_search_biz,cc_search_host_ByBizId,cc_search_user,run_fast_execute_script,get_job_instance_log
+from admin import HostMonitor,Montitor
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
@@ -26,8 +26,9 @@ def search_biz(request):
     data = cc_search_biz(request.user.username)
     data = data['data']
     selectData = []
-    for obj in data['info']:
-        selectData.append({'label': obj['bk_biz_name'], 'value': obj['bk_biz_id']})
+    if data:
+        for obj in data['info']:
+            selectData.append({'label': obj['bk_biz_name'], 'value': obj['bk_biz_id']})
     return JsonResponse({'data': selectData})
 
 def search_host(request,bizId):
@@ -98,24 +99,30 @@ def list(request):
     else:
         return JsonResponse({'data': []})
 
-
-    for obj in data:
-        listData.append(obj.toJson())
     return JsonResponse({'data': listData})
 
 # 考试详情查询
-def exam_one(request,id):
-
-    return JsonResponse(cc_search_user(), safe=False)
+def one(request,id):
+    scriptContent = "MEMORY=$(free -m | awk 'NR==2{printf \"%.2f%%\", $3*100/$2 }');DISK=$(df -h | awk '$NF==\"/\"{printf \"%s\", $5}');CPU=$(top -bn1 | grep load | awk '{printf \"%.2f%%\", $(NF-2)}');DATE=$(date '+%Y-%m-%d %H:%M:%S');echo -e \"$DATE|$MEMORY|$DISK|$CPU\""
+    execData = run_fast_execute_script(id,scriptContent,[{'ip':request.GET.get('innerip'),'bk_cloud_id':request.GET.get('bk_cloud_id')}])
+    logData = get_job_instance_log(id, execData['data'])
+    data = {}
+    for log in logData:
+        property = log['log_content'].split('|')
+        if (len(property) > 1):
+            data['MEMORY'] = property[1]
+            data['DISK'] = property[1]
+            data['CPU'] = property[1]
+    return JsonResponse({'data':data})
 
 # 考试删除
 def delete(request,id):
-    Exam.objects.filter(id=id).delete()
+    Montitor.objects.filter(id=id).delete()
     return JsonResponse({'result': 'true'})
 
 def add(request):
     data = json.loads(request.body)
-    exam = Exam(business=data['business'],name=data['name'],exam_type=data['exam_type'],principal=data['principal'],phone=data['phone'],exam_date=datetime.datetime.strptime(str(data['exam_date']).split('T')[0], '%Y-%m-%d'),site=data['site'],filePath=data['filePath'])
+    exam = HostMonitor(business=data['business'],name=data['name'],exam_type=data['exam_type'],principal=data['principal'],phone=data['phone'],exam_date=datetime.datetime.strptime(str(data['exam_date']).split('T')[0], '%Y-%m-%d'),site=data['site'],filePath=data['filePath'])
     exam.save()
     return JsonResponse({'result': 'true'})
 
