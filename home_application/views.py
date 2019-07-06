@@ -41,7 +41,7 @@ def test(request):
     """
     测试
     """
-    return render_mako_context(request, '/home_application/test.html')
+    return JsonResponse({'username':request.user.username,'result':'OK'})
 
 def modal(request):
     """

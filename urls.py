@@ -18,6 +18,7 @@ urlpatterns = patterns(
     url(r'^app_control/', include('app_control.urls')),
     # 数据准备
     url(r'^data_preparation/', include('data_preparation.urls')),
+    url(r'^api/', include('home_application.urls')),
     # 在home_application(根应用)里开始开发你的应用的主要功能
     url(r'^', include('home_application.urls')),
 

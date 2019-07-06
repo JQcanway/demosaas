@@ -7,7 +7,14 @@
     <div class="home-page" id="app">
         <div class="cw-search-box">
             <i-form :model="searchInfo" label-position="right" :label-width="80" class="flex">
-
+                <form-item label=" 请选择业务:">
+                        <i-select v-model="searchInfo.business" clearable>
+                            <i-option :value="item.label" v-for="(item,index) in business" :key="index">{{item.label}}</i-option>
+                        </i-select>
+                </form-item>
+                <Form-item label="请输入主机ip" prop="desc">
+                    <i-input v-model="formItem.ip" type="textarea" placeholder="多个ip用回车分割"></i-input>
+                </Form-item>
 
           </i-form>
             <i-button type="primary" class="btn" @click="creatEexam=true">新增</i-button>
@@ -85,63 +92,6 @@
         </Drawer>
 
 
-        <Drawer title="考试详情"
-            v-model="detailsData"
-            :closable="false"
-            :mask-closable="false"
-            width="800">
-            <div style="padding: 0 15px">
-                <i-form
-                    :model="details"
-                    ref="details"
-                    :label-width="100">
-
-                    <Form-item label="考试名称：" prop="name">
-                        <i-input v-model="details.name"  :disabled="true"></i-input>
-                    </Form-item>
-
-                    <Form-item label="类型：" prop="exam_type">
-                        <i-input v-model="details.exam_type"  :disabled="true"></i-input>
-                    </Form-item>
-
-                    <Form-item label="关联业务：" prop="business">
-                        <i-input v-model="details.business"  :disabled="true"></i-input>
-                    </Form-item>
-
-                    <Form-item label="地点：" prop="site">
-                        <i-input v-model="details.site"  :disabled="true"></i-input>
-                    </Form-item>
-
-                    <Form-item label="时间：" prop="exam_date">
-                        <i-input v-model="details.exam_date"  :disabled="true"></i-input>
-                    </Form-item>
-
-                    <Form-item label="负责人：" prop="principal">
-                        <i-input v-model="details.principal"  :disabled="true"></i-input>
-                    </Form-item>
-
-                    <Form-item label="联系方式：" prop="phone">
-                        <i-input v-model="details.phone"  :disabled="true"></i-input>
-                    </Form-item>
-
-                    <Form-item label="考试题目：" prop="filePath">
-                        <i-input v-model="details.filePath"  :disabled="true"></i-input>
-                    </Form-item>
-
-                    <Form-item >
-                       <i-table :columns="examinee_columns" :data="examinee_data"></i-table>
-                    </Form-item>
-
-                    <Form-item>
-                        <div class="cw-btn-group">
-                            <!-- 按钮启用/禁用控制（:disabled） -->
-                            <i-button type="normal" @click="cancel">取消</i-button>
-                        </div>
-                    </Form-item>
-                </i-form>
-            </div>
-        </Drawer>
-
     </div>
 </%block>
 <script>
@@ -157,10 +107,8 @@
                  hosts:[],
                  principal:[],
                  searchInfo: {
-                    name: '',
-                     site:'',
-                    exam_type:'',
-                     principal:'',
+                    business: '',
+                     ip:'',
                     },
                  details:{
                     business:'',
@@ -182,83 +130,23 @@
                      site:'',
                      filePath:'',
                  },
-                 exam_type:[
-                    {
-                       label:'运维开发工程师',
-                       value:'运维开发工程师'
-                   },
-                   {
-                       label:'运维自动化工程师',
-                       value:'运维自动化工程师'
-                   },
-                 ],
-                 ruleValidate: {
-                    business: [
-                        { required: true, message: '关联业务不能为空', trigger: 'blur' }
-                    ],
-                    name: [
-                        { required: true, message: '考试名称不能为空', trigger: 'blur' }
-                    ],
-                    exam_type: [
-                        { required: true, message: '考试类型不能为空', trigger: 'blur' }
-                    ],
-                     principal: [
-                        { required: true, message: '负责人不能为空', trigger: 'blur' }
-                    ],
-                    exam_date: [
-                        { required: true, message: '考试时间不能为空', trigger: 'blur' }
-                    ],
-                     site: [
-                        { required: true, message: '考试地址不能为空', trigger: 'blur' }
-                    ],
-                },
-                 examinee_columns:[
-                     {
-                        title: '考生',
-                        key: 'name'
-                    },
-                     {
-                        title: '部门',
-                        key: 'department'
-                    },
-                     {
-                        title: '得分',
-                        key: 'score'
-                    },
-                     {
-                        title: '结果',
-                        key: 'result'
-                    },
-                     {
-                        title: '备注',
-                        key: 'desc'
-                    },
-                 ],
                  columns: [
                     {
-                        title: '业务名称',
+                        title: '内网ip',
                         key: 'business'
                     },
                      {
-                        title: '考试名称',
+                        title: '系统名称',
                         key: 'name'
                     },
                      {
-                        title: '考试类型',
+                        title: '主机名',
                         key: 'exam_type'
                     },
                      {
-                        title: '考试时间',
+                        title: '云区域',
                         key: 'exam_date'
-                    },
-                     {
-                        title: '考试状态',
-                        key: 'exam_state'
-                    },
-                     {
-                        title: '考试地点',
-                        key: 'site'
-                    },
+                    }
                     {
                         title: '操作',
                         key: 'actiono',
@@ -291,7 +179,7 @@
                                             this.delete_data(params.row.id)
                                         }
                                     }
-                                }, '删除'),
+                                }, '添加监控'),
                             ]);
                         }
                     }

@@ -11,8 +11,8 @@
 # admin.site.register(aaaa)
 # ===============================================================================
 from django.contrib import admin
-from data_preparation.models import Exam,Examinee
-admin.site.register(Exam)
-admin.site.register(Examinee)
+from data_preparation.models import HostMonitor,Montitor
+admin.site.register(HostMonitor)
+admin.site.register(Montitor)
 
 

@@ -56,25 +56,49 @@ def search_users(request):
 
 # 考试列表查询
 def list(request):
-    name = request.GET.get('name')
-    if name:
-        data = Exam.objects.filter(name__contains=name)
-    else:
-        data = Exam.objects.filter(name__contains='')
-
-    site = request.GET.get('site')
-    if site:
-        data = Exam.objects.filter(site__contains=site)
-
-    exam_type = request.GET.get('exam_type')
-    if exam_type:
-        data = Exam.objects.filter(exam_type=exam_type)
-
-    principal = request.GET.get('principal')
-    if principal:
-        data = Exam.objects.filter(principal=principal)
+    business = request.GET.get('business')
 
     listData = []
+    if business:
+        data = cc_search_host_ByBizId(business)
+        data = data['data']
+        for obj in data['info']:
+            host = obj['host']
+            hostData = {}
+            hostData['innerip'] = host['bk_host_innerip']
+            hostData['host_name'] = host['bk_host_name']
+            hostData['os_name'] = host['bk_os_name']
+            cloud = host['bk_cloud_id']
+            cloud_area = ''
+            for c in cloud:
+                cloud_area += (c['bk_inst_name'] + ',')
+            hostData['cloud_name'] = cloud_area[0:cloud_area.__len__() - 1]
+
+            hostData['bk_cloud_id'] = cloud[0]['id']
+            listData.append(hostData)
+
+        ip =  request.GET.get('ip')
+        if ip:
+            listData = []
+            for obj in data['info']:
+                host = obj['host']
+                if host['bk_host_innerip'] in ip:
+                    hostData = {}
+                    hostData['innerip'] = host['bk_host_innerip']
+                    hostData['host_name'] = host['bk_host_name']
+                    hostData['os_name'] = host['bk_os_name']
+                    cloud = host['bk_cloud_id']
+                    cloud_area = ''
+                    for c in cloud:
+                        cloud_area += (c['bk_inst_name'] + ',')
+                    hostData['cloud_name'] = cloud_area[0:cloud_area.__len__() - 1]
+
+                    hostData['bk_cloud_id'] = cloud[0]['id']
+                    listData.append(hostData)
+    else:
+        return JsonResponse({'data': []})
+
+
     for obj in data:
         listData.append(obj.toJson())
     return JsonResponse({'data': listData})
